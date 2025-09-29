@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👒</text></svg>"
+    />
+    <title>Dashboard Simples - One Piece</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <aside class="sidebar">
+        <h2>One Piece Data</h2>
+        <nav>
+          <ul>
+            <li><a href="#geral">Visão Geral</a></li>
+            <li><a href="#tripulacao">Tripulação</a></li>
+            <li><a href="#recompensas">Recompensas</a></li>
+          </ul>
+        </nav>
+        <div class="quick-stats">
+          <h3>Estatísticas Rápidas</h3>
+          <p>Capítulos Vistos: <span id="capitulos-vistos">0</span></p>
+          <p>Arcos Finalizados: <span id="arcos-finalizados">0</span></p>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <h1 class="fade-in">Dashboard dos Chapéus de Palha</h1>
+
+        <section id="geral" class="data-cards-container">
+          <div class="data-card card-animation">
+            <h3>Membros Atuais</h3>
+            <p id="membros-atuais" class="card-value">0</p>
+          </div>
+          <div class="data-card card-animation">
+            <h3>Recompensa Total (B$)</h3>
+            <p id="recompensa-total" class="card-value">0 B$</p>
+          </div>
+          <div class="data-card card-animation">
+            <h3>Akuma no Mi Users</h3>
+            <p id="akuma-users" class="card-value">0</p>
+          </div>
+        </section>
+
+        <section id="tripulacao" class="fade-in-delay">
+          <h2>Detalhes da Tripulação</h2>
+          <table id="tripulacao-tabela">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Função</th>
+                <th>Recompensa (B$)</th>
+                <th>Akuma no Mi</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
