@@ -2,8 +2,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 :root {
-  --cor-primaria: #ff4500; /* Laranja forte (Luffy!) */
-  --cor-secundaria: #1e3a5f; /* Azul escuro (mar) */
+  --cor-primaria: #00bcd4; /* Ciano/Azul claro (Tech) */
+  --cor-secundaria: #37474f; /* Azul escuro/Chumbo (Geek) */
   --cor-fundo: #f4f7f9;
   --cor-texto: #333;
   --cor-card-fundo: #ffffff;
@@ -15,6 +15,11 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
+}
+
+html {
+  /* Isso habilita o scroll suave em toda a página */
+  scroll-behavior: smooth;
 }
 
 body {
@@ -131,6 +136,17 @@ body {
   animation: pop-in 0.5s ease-out;
 }
 
+/* --- Estilo para o Thumbnail da Imagem no Dashboard --- */
+
+.product-thumb {
+  width: 50px; /* Define o tamanho do mini quadrado */
+  height: 50px;
+  object-fit: cover; /* Garante que a imagem preencha o quadrado sem distorcer */
+  border-radius: 4px; /* Cantos levemente arredondados */
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
+
 /* --- TABELA DA TRIPULAÇÃO --- */
 #tripulacao h2 {
   margin-bottom: 20px;
@@ -167,6 +183,44 @@ body {
   background-color: #ffe0b2;
   transform: scale(1.01); /* Pequeno zoom */
   cursor: pointer;
+}
+
+/* --- Melhorias na Tabela --- */
+
+#produtos-tabela thead tr {
+  display: flex;
+  gap: 1rem;
+}
+
+#produtos-tabela tbody tr {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+/* Estilo para Linhas de Estoque Baixo */
+#produtos-tabela tbody tr.low-stock {
+  background-color: #ffdddd; /* Fundo vermelho claro */
+  color: #c0392b; /* Texto vermelho escuro */
+  font-weight: bold;
+}
+
+/* Efeito de destaque no estoque (opcional) */
+#produtos-tabela tbody tr.low-stock td:nth-child(3) {
+  /* Altera a terceira coluna (Estoque) */
+  font-size: 1.1em;
+  padding: 10px 15px;
+  border-left: 3px solid #e74c3c;
+  animation: pulse-low-stock 1.5s infinite alternate;
+}
+
+@keyframes pulse-low-stock {
+  from {
+    opacity: 0.8;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.02);
+  }
 }
 
 /* --- KEYFRAMES (As Animações em Si) --- */

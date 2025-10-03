@@ -5,56 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="icon"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👒</text></svg>"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>"
     />
-    <title>Dashboard Simples - One Piece</title>
+    <title>Dashboard - TechGeek Shop</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="dashboard-container">
       <aside class="sidebar">
-        <h2>One Piece Data</h2>
+        <h2>Mini Loja Virtual</h2>
         <nav>
           <ul>
             <li><a href="#geral">Visão Geral</a></li>
-            <li><a href="#tripulacao">Tripulação</a></li>
-            <li><a href="#recompensas">Recompensas</a></li>
+            <li><a href="#vendas">Últimas Vendas</a></li>
+            <li><a href="#produtos">Estoque</a></li>
           </ul>
         </nav>
         <div class="quick-stats">
-          <h3>Estatísticas Rápidas</h3>
-          <p>Capítulos Vistos: <span id="capitulos-vistos">0</span></p>
-          <p>Arcos Finalizados: <span id="arcos-finalizados">0</span></p>
+          <h3>Estatísticas Chave</h3>
+          <p>Vendas Hoje: <span id="vendas-hoje">0</span></p>
+          <p>Receita Total: <span id="receita-total">R$ 0,00</span></p>
         </div>
       </aside>
 
       <main class="main-content">
-        <h1 class="fade-in">Dashboard dos Chapéus de Palha</h1>
+        <h1 class="fade-in">Painel de Controle da Loja</h1>
 
         <section id="geral" class="data-cards-container">
           <div class="data-card card-animation">
-            <h3>Membros Atuais</h3>
-            <p id="membros-atuais" class="card-value">0</p>
+            <h3>Total de Produtos</h3>
+            <p id="total-produtos" class="card-value">0</p>
           </div>
           <div class="data-card card-animation">
-            <h3>Recompensa Total (B$)</h3>
-            <p id="recompensa-total" class="card-value">0 B$</p>
+            <h3>Vendas Registradas</h3>
+            <p id="total-vendas" class="card-value">0</p>
           </div>
           <div class="data-card card-animation">
-            <h3>Akuma no Mi Users</h3>
-            <p id="akuma-users" class="card-value">0</p>
+            <h3>Valor Total Vendido</h3>
+            <p id="valor-total-vendido" class="card-value">R$ 0,00</p>
           </div>
         </section>
 
-        <section id="tripulacao" class="fade-in-delay">
-          <h2>Detalhes da Tripulação</h2>
-          <table id="tripulacao-tabela">
+        <section id="vendas" class="fade-in-delay">
+          <h2>Últimas 10 Vendas</h2>
+          <table id="vendas-tabela">
             <thead>
               <tr>
-                <th>Nome</th>
-                <th>Função</th>
-                <th>Recompensa (B$)</th>
-                <th>Akuma no Mi</th>
+                <th>ID Venda</th>
+                <th>Data</th>
+                <th>Valor Total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </section>
+
+        <section id="produtos" class="fade-in-delay" style="margin-top: 50px">
+          <h2>Estoque por Produto</h2>
+          <table id="produtos-tabela">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Imagem</th>
+                <th>Nome do Produto</th>
+                <th>Estoque</th>
+                <th>Preço</th>
               </tr>
             </thead>
             <tbody></tbody>

@@ -1,103 +1,17 @@
-// Dados Fictícios de One Piece - Tripulação dos Chapéus de Palha
-const tripulacao = [
-  {
-    nome: "Monkey D. Luffy",
-    funcao: "Capitão",
-    recompensa: 3000000000,
-    akuma: "Hito Hito no Mi, Modelo: Nika",
-  },
-  {
-    nome: "Roronoa Zoro",
-    funcao: "Espadachim",
-    recompensa: 1111000000,
-    akuma: "Nenhuma",
-  },
-  {
-    nome: "Nami",
-    funcao: "Navegadora",
-    recompensa: 366000000,
-    akuma: "Nenhuma",
-  },
-  {
-    nome: "Usopp",
-    funcao: "Atirador",
-    recompensa: 500000000,
-    akuma: "Nenhuma",
-  },
-  {
-    nome: "Sanji",
-    funcao: "Cozinheiro",
-    recompensa: 1032000000,
-    akuma: "Nenhuma",
-  },
-  {
-    nome: "Tony Tony Chopper",
-    funcao: "Médico",
-    recompensa: 1000,
-    akuma: "Hito Hito no Mi",
-  },
-  {
-    nome: "Nico Robin",
-    funcao: "Arqueóloga",
-    recompensa: 930000000,
-    akuma: "Hana Hana no Mi",
-  },
-  {
-    nome: "Franky",
-    funcao: "Carpinteiro",
-    recompensa: 394000000,
-    akuma: "Nenhuma",
-  },
-  {
-    nome: "Brook",
-    funcao: "Músico",
-    recompensa: 383000000,
-    akuma: "Yomi Yomi no Mi",
-  },
-  {
-    nome: "Jinbe",
-    funcao: "Timoneiro",
-    recompensa: 1100000000,
-    akuma: "Nenhuma",
-  },
-];
-
-// Outras Estatísticas Fictícias
-const statsGerais = {
-  capitulosVistos: 1078,
-  arcosFinalizados: 15,
-};
+const API_URL = "./api/relatorios.php";
 
 // --- Funções Auxiliares de Formatação e Cálculo ---
 
-// Formata o número como string de recompensa (B$)
-function formatarRecompensa(recompensa) {
-  // Ex: 3000000000 -> 3.000.000.000 B$
-  return (
-    recompensa
-      .toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "JPY",
-        minimumFractionDigits: 0,
-      })
-      .replace("¥", "") + " B$"
-  );
+function formatCurrency(value, withPrefix = true) {
+  // Converte para float (se vier como string do BD) e formata
+  const formatted = parseFloat(value).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+  return withPrefix ? formatted : formatted.replace("R$", "").trim();
 }
 
-// Calcula as Métricas do Dashboard
-function calcularMetricas(data) {
-  const totalMembros = data.length;
-  const totalRecompensa = data.reduce(
-    (soma, membro) => soma + membro.recompensa,
-    0
-  );
-  const akumaUsers = data.filter((membro) => membro.akuma !== "Nenhuma").length;
-  return {
-    totalMembros,
-    totalRecompensa,
-    akumaUsers,
-  };
-}
+// O cálculo agora é feito pelo PHP/SQL, o JS apenas formata e popula.
 
 // --- Funções de Animação e População ---
 
@@ -116,7 +30,7 @@ function animateValue(
   const step = (timestamp) => {
     if (!startTimestamp) startTimestamp = timestamp;
     const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-    const value = Math.floor(progress * (end - start) + start);
+    const value = start + (end - start) * progress; // Usa interpolação linear para floats
 
     obj.textContent = formatter(value);
 
@@ -128,72 +42,145 @@ function animateValue(
 }
 
 // Popula os Cards de Visão Geral com Animação
-function popularCards(metricas) {
+function popularCards(metrics) {
   const duracao = 1500; // 1.5 segundos para a animação
 
-  // Membros (Contagem simples)
-  animateValue(
-    "membros-atuais",
-    0,
-    metricas.totalMembros,
-    duracao,
-    (val) => val
-  );
+  // Total de Produtos
+  animateValue("total-produtos", 0, parseInt(metrics.total_produtos), duracao);
 
-  // Recompensa Total (Contagem formatada)
-  animateValue(
-    "recompensa-total",
-    0,
-    metricas.totalRecompensa,
-    duracao,
-    formatarRecompensa
-  );
+  // Total de Vendas
+  animateValue("total-vendas", 0, parseInt(metrics.total_vendas), duracao);
 
-  // Usuários Akuma no Mi (Contagem simples)
-  animateValue("akuma-users", 0, metricas.akumaUsers, duracao, (val) => val);
+  // Valor Total Vendido (Requer formatação de moeda durante a animação)
+  animateValue(
+    "valor-total-vendido",
+    0,
+    parseFloat(metrics.valor_total_vendido),
+    duracao,
+    formatCurrency
+  );
 }
 
-// Popula a Tabela da Tripulação
-function popularTabela(data) {
-  const tabelaBody = document.querySelector("#tripulacao-tabela tbody");
+// Popula as Estatísticas Rápidas na Sidebar
+function popularQuickStats(stats) {
+  const duracao = 1000;
+
+  // Vendas Hoje (Contagem simples)
+  animateValue("vendas-hoje", 0, parseInt(stats.vendas_hoje), duracao);
+
+  // Receita Total (Formatação de moeda)
+  animateValue(
+    "receita-total",
+    0,
+    parseFloat(stats.receita_hoje),
+    duracao,
+    formatCurrency
+  );
+}
+
+// Popula a Tabela de Vendas
+function popularTabelaVendas(data) {
+  const tabelaBody = document.querySelector("#vendas-tabela tbody");
   tabelaBody.innerHTML = "";
 
-  data.forEach((membro) => {
+  data.forEach((venda) => {
     const row = tabelaBody.insertRow();
 
-    let cellNome = row.insertCell();
-    cellNome.textContent = membro.nome;
+    // Formata a data e status para exibição
+    const dataFormatada = new Date(venda.data_venda).toLocaleDateString(
+      "pt-BR",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    );
+    const statusText =
+      venda.status.charAt(0).toUpperCase() + venda.status.slice(1);
 
-    let cellFuncao = row.insertCell();
-    cellFuncao.textContent = membro.funcao;
+    let cellId = row.insertCell();
+    cellId.textContent = venda.id;
 
-    let cellRecompensa = row.insertCell();
-    cellRecompensa.textContent = formatarRecompensa(membro.recompensa);
+    let cellData = row.insertCell();
+    cellData.textContent = dataFormatada;
 
-    let cellAkuma = row.insertCell();
-    cellAkuma.textContent = membro.akuma;
+    let cellValor = row.insertCell();
+    cellValor.textContent = formatCurrency(venda.valor_total);
+
+    let cellStatus = row.insertCell();
+    cellStatus.textContent = statusText;
+    cellStatus.className = `status-${venda.status}`; // Para estilização futura
   });
 }
 
-// Popula as Estatísticas Rápidas na Sidebar (também com contagem para ser dinâmico)
-function popularQuickStats(stats) {
-  const duracao = 1000;
-  animateValue("capitulos-vistos", 0, stats.capitulosVistos, duracao);
-  animateValue("arcos-finalizados", 0, stats.arcosFinalizados, duracao);
+// Popula a Tabela de Estoque
+// Popula a Tabela de Estoque
+function popularTabelaProdutos(data) {
+  const tabelaBody = document.querySelector("#produtos-tabela tbody");
+  tabelaBody.innerHTML = "";
+
+  data.forEach((produto) => {
+    const row = tabelaBody.insertRow();
+
+    // Destaca produtos com estoque baixo
+    if (produto.estoque < 5) {
+      row.className = "low-stock";
+    }
+
+    let cellId = row.insertCell();
+    cellId.textContent = produto.id;
+
+    // NOVO: Célula da Imagem
+    let cellImagem = row.insertCell();
+    const img = document.createElement("img");
+    // Adiciona a classe 'product-thumb' para estilização
+    img.className = "product-thumb";
+    // Use a barra inicial para apontar para a raiz do localhost:
+    img.src = `../mini_loja_virtual/${produto.imagem_url}`;
+    img.alt = produto.nome;
+    cellImagem.appendChild(img);
+    // Centraliza o conteúdo da célula
+    cellImagem.style.textAlign = "center";
+
+    let cellNome = row.insertCell();
+    cellNome.textContent = produto.nome;
+
+    let cellEstoque = row.insertCell();
+    cellEstoque.textContent = produto.estoque;
+
+    let cellPreco = row.insertCell();
+    cellPreco.textContent = formatCurrency(produto.preco);
+  });
 }
 
-// --- Função Principal de Inicialização ---
+// --- Função Principal de BUSCA DE DADOS ---
+
+async function fetchDashboardData() {
+  try {
+    const response = await fetch(API_URL);
+    const result = await response.json();
+
+    if (result.success) {
+      const { metrics, ultimas_vendas, produtos_estoque, stats_hoje } = result;
+
+      // População do Dashboard
+      popularCards(metrics);
+      popularQuickStats(stats_hoje);
+      popularTabelaVendas(ultimas_vendas);
+      popularTabelaProdutos(produtos_estoque);
+    } else {
+      console.error("Erro no Dashboard:", result.message);
+      alert("Falha ao carregar dados do Dashboard. Verifique a API.");
+    }
+  } catch (error) {
+    console.error("Erro na comunicação com a API de relatórios:", error);
+    alert("Falha de conexão com o servidor de relatórios.");
+  }
+}
+
+// --- Inicialização ---
 function initDashboard() {
-  const metricas = calcularMetricas(tripulacao);
-
-  // Adiciona um pequeno delay na população dos cards para a animação de "contagem"
-  setTimeout(() => {
-    popularCards(metricas);
-  }, 500);
-
-  popularTabela(tripulacao);
-  popularQuickStats(statsGerais);
+  // Substituímos a lógica de dados estáticos pela chamada à API
+  fetchDashboardData();
 }
 
-// Inicia o dashboard quando o script é carregado
 document.addEventListener("DOMContentLoaded", initDashboard);
